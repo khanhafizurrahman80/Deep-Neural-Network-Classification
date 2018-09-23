@@ -23,9 +23,13 @@ In both tensorflow and Keras following are the description of hyperparameters:
 
 
 No.of layer: 3
+
 weight initialization: Xavier
+
 Activation Function: Except output layer, in all layers the activation function is RELU where softmax is used in the final layer
+
 Cost Function: Cross entropy
+
 Optimization Algorithm: Adam
 
 ## LINEAR -> RELU -> LINEAR -> RELU -> LINEAR -> SOFTMAX
