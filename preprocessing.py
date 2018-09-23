@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 
 
@@ -34,14 +35,33 @@ def splitDataset(inputData, inputLabelData):
     return {"X_train": X_train, "X_test": X_test, "Y_train": Y_train, "Y_test": Y_val}
 
 def preprocessingStep(inputData, inputLabelData):
-    logger.debug('preprocessing step started where input data shape is %s and input label data shape is %s ', inputData.shape, inputLabelData.shape)
-    logger.debug('first input before normalizing is \n %s', inputData[0,:])
+    '''logger.debug('preprocessing step started where input data shape is %s and input label data shape is %s ', inputData.shape, inputLabelData.shape)
+    logger.debug('first input before normalizing is \n %s', inputData[0,:])'''
     inputData = normalizeTheDataset(inputData)
     logger.debug('first input after normalizing is \n %s', inputData[0, :])
     splitData = splitDataset(inputData, inputLabelData)
     return splitData
 
 
+def convertcategorytoNumericalData(df):
+    '''
+    Convert the categorical dataframe into numerical dataframe
+    
+    Argument:
+    df -- name of the dataframe
+    
+    Return:
+    imp_df -- a dataframe replacing the category values into numerical values
+    '''
+    imp_df = df
+
+    for f in imp_df.columns:
+        if imp_df[f].dtype== 'object':
+            lbl = preprocessing.LabelEncoder()
+            lbl.fit(list(imp_df[f].values))
+            imp_df[f] = lbl.transform(list(imp_df[f].values))
+            
+    return imp_df
 
 def loadTheDataset(dataset):
     """
@@ -58,3 +78,23 @@ def loadTheDataset(dataset):
     m = X.shape[0]
     n = X.shape[1]
     return (X, Y, m, n)
+
+def loadTheDatasetfromlocal_repo(dataset, targetVariable):
+    """
+
+    File contain dataset from the local file repository system
+    Arg : 
+    dataset -- pandas dataframe
+    targetVariable - name of the target variabel
+    Return : a tuple containing 
+        a. Input Data set (X) -- numpy ndarray
+        b. Target Data set (Y) -- numpy ndarray
+        c. no of samples (m)
+        d. no of features (n)
+    """
+    X= dataset.drop(targetVariable, axis=1)
+    Y= dataset[targetVariable]
+    m = X.shape[0]
+    n = X.shape[1]
+    return (X.values, Y.values, m, n)
+
